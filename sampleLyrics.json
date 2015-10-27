@@ -1,0 +1,37 @@
+[
+	{
+		type: "lyrics", //options are lyrics or delay (nothing)
+		showFor: 1000, //milliseconds, how long is it visible
+		lyrics:
+			[
+				{
+					lyric: "What"
+					highlightAt: 250, //milliseconds. Starts from when the lyrics were shown for the first one, from last lyric for all others
+				},
+				{
+					lyric: "is"
+					highlightAt: 50,
+				},
+				{
+					lyric: "love?"
+					highlightAt: 50,
+				},
+				{
+					lyric: "Baby"
+					highlightAt: 250,
+				},
+				{
+					lyric: "don't"
+					highlightAt: 50,
+				},
+				{
+					lyric: "hurt"
+					highlightAt: 50,
+				},
+				{
+					lyric: "me"
+					highlightAt: 50,
+				},
+			]
+	}
+]

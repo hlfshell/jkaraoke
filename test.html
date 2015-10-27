@@ -1,0 +1,36 @@
+<html>
+	<head>
+		<title>Test karaoke page</title>
+		
+		<style>
+			body {
+				background-color: black;
+				color: white;
+			}
+			
+			span {
+				font-size: 20px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id='karaokeText'></span>
+		
+		<script type='text/javscript' src='jkaraoke.js'></script>
+		<script type='text/javascript'>
+			var lyrics =
+				{
+				
+				};
+				
+			var karaoke = new Karaoke({
+				lyrics: lyrics,
+				unhighlightedColor: white,
+				highlightedColor: red
+			});
+			
+			karaoke.start();
+			
+		</script>
+	</body>
+</html>
