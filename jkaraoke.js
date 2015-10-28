@@ -1,9 +1,10 @@
+"use strict"
 
 function Karaoke(opts){
 	this.target = opts.target;
 	this.lyrics = opts.lyrics;
-	this.unhighlightedText = opts.unhighlightedTexts; 
-	this.highlightedText;
+	this.unHighlightedColor = opts.unHighlightedColor; 
+	this.highlightedColor = opts.highlightedColor;
 	
 	this._startedAt = 0;
 	this._lyricPointer = 0;
@@ -21,48 +22,67 @@ Karaoke.prototype.start = function(){
 };
 
 Karaoke.prototype._showNextLyric = function(){
-	if(++this._lyricPointer >= this.lyrics.length)
-		this.stop();
+	var self = this;
 	
-	//Increment and reset pointers
-	this._lyricPointer++;
-	this._highlightPointer = 0;
+	if(++self._lyricPointer >= self.lyrics.length)
+		return self.stop();
+	
+	//Reset pointers
+	self._highlightPointer = 0;
+	
+	//Clear out arrs
+	self._highlightedWords = [];
+	self._unHighlightedWords = [];
 	
 	//Clear timeouts
-	if(this._lyricTimeout) clearTimeout(this._lyricTimeout);
-	if(this._highlightTimeout) clearTimeout(this._highlightTimeout);
+	if(self._lyricTimeout) clearTimeout(self._lyricTimeout);
+	if(self._highlightTimeout) clearTimeout(self._highlightTimeout);
 	
-	this._clearText();
-	this._showCurrentLyrics();
+	self._clearText();
+	self._showCurrentLyrics();
 };
 
 Karaoke.prototype._showCurrentLyrics = function(){
-	if(this.lyrics[this._lyricPointer].type == "delay"){
-		this._clearText();
+	var self = this;
+	
+	if(self.lyrics[self._lyricPointer].type == "delay"){
+		self._clearText();
 	} else {
-		this.lyrics[this._lyricPointer].lyrics.forEach(function(lyric){
-			this._unhighlightedWords.push(lyric);
+		self.lyrics[self._lyricPointer].lyrics.forEach(function(lyric){
+			self._unHighlightedWords.push(lyric);
 		});
-		this._generateHTML();
+		
+		self._setNextHighlight(self);
 	}
 	
-	this._lyricTimeout = setTimeout(
-		this._showNextLyric,
-		this.lyrics[this._lyricPointer].showFor
+	self._lyricTimeout = setTimeout(
+		function(){
+			self._showNextLyric(self)
+		},
+		self.lyrics[self._lyricPointer].showFor
 	);
 	
-	this._setText(this._setNextHighlight());
+	self._setText(self._generateHTML());
 };
 
 Karaoke.prototype._setNextHighlight = function(){
-	this._highlightTimeout = setTimeout(
+	var self = this;
+
+	self._highlightTimeout = setTimeout(
 		function(){
 			//Highlight the word
-			this._highlightPointer++;		
+			self._highlightedWords.push(self._unHighlightedWords.shift());
+			self._highlightPointer++;
+			self._setText(self._generateHTML(self));
+			if(self._highlightPointer < self.lyrics[self._lyricPointer].lyrics.length){
+				self._setNextHighlight(self);
+			}// else {
+			//	self._showNextLyric(self);
+			//}
 		},
-		this.lyrics[this._lyricPointer]
-			.lyrics[this._highlightPointer]
-			.highlightAt
+		self.lyrics[self._lyricPointer]
+				.lyrics[self._highlightPointer]
+				.highlightAt
 	);
 };
 
@@ -73,33 +93,35 @@ Karaoke.prototype.stop = function(){
 Karaoke.prototype._generateHTML = function(){
 	//Highlighted first
 	var highlightedSpan = "<span class='karaokeHightlighted'";
-	if(this.highlightedText) highlightedSpan += " color='color: " +
-		this.highlightedText + "' ";
+	if(this.highlightedColor) highlightedSpan += " style='color: " +
+		this.highlightedColor + "' ";
 	highlightedSpan += ">"
 	
 	this._highlightedWords.forEach(function(word){
-		highlightedSpan += word + " ";
+		highlightedSpan += word.lyric + " ";
 	});
 	
 	highlightedSpan += "</span>";
 	
 	//Unhighlighted next
-	var unHighlightedSpan = "<span class='karaokeHightlighted'";
-	if(this.unHighlightedText) unHighlightedSpan += " color='color: " +
-		this.unHighlightedText + "' ";
+	var unHighlightedSpan = "<span class='karaokeUnHightlighted'";
+	if(this.unHighlightedColor) unHighlightedSpan += " style='color: " +
+		this.unHighlightedColor + "' ";
 	unHighlightedSpan += ">"
 	
 	this._unHighlightedWords.forEach(function(word){
-		unHighlightedSpan += word + " ";
+		unHighlightedSpan += word.lyric + " ";
 	});
 	
 	unHighlightedSpan += "</span>";
+	
+	return highlightedSpan + unHighlightedSpan;
 };
 
 Karaoke.prototype._clearText = function(){
-	document.getElementById(this.target).innerHTML("");
+	document.getElementById(this.target).innerHTML = "";
 };
 
 Karaoke.prototype._setText = function(text){
-	document.getElementById(this.target).innerHTML(text);
+	document.getElementById(this.target).innerHTML = text;
 };

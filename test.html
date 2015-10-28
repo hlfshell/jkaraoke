@@ -9,24 +9,95 @@
 			}
 			
 			span {
-				font-size: 20px;
+				font-size: 40px;
 			}
 		</style>
 	</head>
 	<body>
-		<div id='karaokeText'></span>
+		<div id='karaokeText'></div>
 		
-		<script type='text/javscript' src='jkaraoke.js'></script>
+		
+		<script src='jkaraoke.js'></script>
 		<script type='text/javascript'>
+			"use strict"
 			var lyrics =
-				{
-				
-				};
+				[
+					{
+						type: "lyrics", //options are lyrics or delay (nothing)
+						showFor: 4500, //milliseconds, how long is it visible
+						lyrics:
+							[
+								{
+									lyric: "What",
+									highlightAt: 1000, //milliseconds. Starts from when the lyrics were shown for the first one, from last lyric for all others
+								},
+								{
+									lyric: "is",
+									highlightAt: 250,
+								},
+								{
+									lyric: "love?",
+									highlightAt: 250,
+								},
+								{
+									lyric: "Baby",
+									highlightAt: 1000,
+								},
+								{
+									lyric: "don't",
+									highlightAt: 250,
+								},
+								{
+									lyric: "hurt",
+									highlightAt: 250,
+								},
+								{
+									lyric: "me",
+									highlightAt: 500,
+								},
+							]
+					},
+					{
+						type: "lyrics", //options are lyrics or delay (nothing)
+						showFor: 2000, //milliseconds, how long is it visible
+						lyrics:
+							[
+								{
+									lyric: "Don't",
+									highlightAt: 250,
+								},
+								{
+									lyric: "hurt",
+									highlightAt: 250,
+								},
+								{
+									lyric: "me",
+									highlightAt: 500,
+								},
+							]
+					},
+					{
+						type: "lyrics", //options are lyrics or delay (nothing)
+						showFor: 5000, //milliseconds, how long is it visible
+						lyrics:
+							[
+								{
+									lyric: "No",
+									highlightAt: 250,
+								},
+								{
+									lyric: "more",
+									highlightAt: 200,
+								}
+							]
+					},
+				];
 				
 			var karaoke = new Karaoke({
+				target: "karaokeText",
 				lyrics: lyrics,
-				unhighlightedColor: white,
-				highlightedColor: red
+				unHighlightedColor: "white",
+				highlightedColor: "red"
 			});
 			
 			karaoke.start();
