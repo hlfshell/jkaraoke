@@ -101,6 +101,10 @@ Karaoke.prototype._setNextHighlight = function(){
 
 Karaoke.prototype.stop = function(){
 	this._stopFlag = true;
+
+	//Clear timeouts
+	if(self._lyricTimeout) clearTimeout(self._lyricTimeout);
+	if(self._highlightTimeout) clearTimeout(self._highlightTimeout);
 };
 
 Karaoke.prototype._generateHTML = function(){
